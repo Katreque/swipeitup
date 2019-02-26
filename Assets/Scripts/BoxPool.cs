@@ -15,10 +15,11 @@ public class BoxPool : MonoBehaviour
             caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
         }
 
-        caixas[0].transform.position = new Vector2(0f, -4f);
+        caixas[0].transform.position = new Vector2(0f, 0f);
+        caixas[1].transform.position = new Vector2(0f, 1.27f);
 
-        for (int i = 0; i < 20; i++) {
-            int randomXPosition = Random.Range(0, 2);
+        for (int i = 2; i < 20; i++) {
+            int randomXPosition = Random.Range(0, 3);
             float YPosition = (float)i;
             caixas[i].transform.position = new Vector2(colunasPossiveis[randomXPosition], 1.27f * YPosition);
         }

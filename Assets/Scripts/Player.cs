@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     private bool Morreu = false;
     private Rigidbody2D rb2d;
     private Animator anim;
+    private Collider2D collider;
 
     Vector2 firstPressPos;
     Vector2 secondPressPos;
@@ -17,6 +18,16 @@ public class Player : MonoBehaviour
     void Start() {
         rb2d = GetComponent<Rigidbody2D> ();
         anim = GetComponent<Animator> ();
+    }
+
+    void FixedUpdate() {
+        if (collider && !rb2d.IsTouching(collider)) {
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Jump")) {
+                GameControl.instance.Morreu();
+                anim.SetTrigger("Morreu");
+                Morreu = true;
+            }
+        }
     }
 
     void Update() {
@@ -61,8 +72,12 @@ public class Player : MonoBehaviour
                 }
             }
             
-        } else {
-            anim.SetTrigger("Die");
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other) {
+        if (other.name == "box") {
+            collider = other;
         }
     }
 }

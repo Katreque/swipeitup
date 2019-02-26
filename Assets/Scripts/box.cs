@@ -6,7 +6,7 @@ public class box : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.GetComponent<Player>() != null) {
-            print("Pontuou");
+            GameControl.instance.Pontuou();
         }
     }
 }

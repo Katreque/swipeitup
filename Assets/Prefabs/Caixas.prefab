@@ -68,7 +68,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: d67a1a6588b8f594fa0afef572372508, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -87,10 +87,10 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1270009776767579062}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.0116996765}
@@ -116,8 +116,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1270009777368949882}
   - component: {fileID: 1270009777368949883}
-  - component: {fileID: 1270009777368949880}
-  - component: {fileID: 1270009777368949881}
+  - component: {fileID: 302583899362211302}
+  - component: {fileID: 1718919254294137705}
   - component: {fileID: 1270009777368949886}
   m_Layer: 0
   m_Name: Caixas
@@ -148,10 +148,10 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1270009777368949877}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -2.72}
@@ -165,9 +165,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 5.29, y: 1.28}
+  m_Size: {x: 9.97, y: 1.28}
   m_EdgeRadius: 0
---- !u!50 &1270009777368949880
+--- !u!50 &302583899362211302
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -182,13 +182,13 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1270009777368949881
+--- !u!114 &1718919254294137705
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
