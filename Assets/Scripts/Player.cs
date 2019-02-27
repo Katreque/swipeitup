@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
     private Collider2D collider;
 
     Vector2 firstPressPos;
-    Vector2 secondPressPos;
 
     void Start() {
         rb2d = GetComponent<Rigidbody2D> ();
@@ -50,28 +49,37 @@ public class Player : MonoBehaviour
             if (Input.touchCount > 0) {
                 Touch t = Input.GetTouch(0);
 
-                if(t.phase == TouchPhase.Began) {
+                if (t.phase == TouchPhase.Began) {
                     firstPressPos = t.position;
                 }
 
-                if(t.phase == TouchPhase.Ended) {
-                    secondPressPos = t.position;                           
+                if (t.phase == TouchPhase.Ended) {
+                    Vector2 secondPressPos = t.position;          
+                    
+                    print(secondPressPos.x);                    
 
                     //Para esquerda - Swipe
-                    if((secondPressPos.x < firstPressPos.x) && transform.position.x > -0.5f) {
+                    if((secondPressPos.x < firstPressPos.x) && posicaoX != -constanteLateral) {
                         transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
                         anim.SetTrigger("Jump");
                     }
 
                     //Para direita - Swipe
-                    if((secondPressPos.x > firstPressPos.x) && transform.position.x < -0.5f) {
+                    if((secondPressPos.x > firstPressPos.x) && posicaoX != constanteLateral) {
                         transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
                         anim.SetTrigger("Jump");
                     }
 
                 }
+            }            
+        } else {
+            if (Input.touchCount > 0) {
+                Touch t = Input.GetTouch(0);
+
+                if (t.phase == TouchPhase.Ended) {
+                    GameControl.instance.NovoJogo();
+                }
             }
-            
         }
     }
 

@@ -10,6 +10,7 @@ public class GameControl : MonoBehaviour
     public GameObject gameOverText;
     public Text scoreText;
     public bool gameOver = false;
+    public bool botaoClicado = false;
     private int score = 0;
 
     void Awake() {
@@ -25,7 +26,7 @@ public class GameControl : MonoBehaviour
     }
 
     void Update() {
-        if (gameOver && Input.GetMouseButtonDown(0)) {
+        if (gameOver && botaoClicado) {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
@@ -42,5 +43,9 @@ public class GameControl : MonoBehaviour
     public void Morreu() {
         gameOverText.SetActive(true);
         gameOver = true;
+    }
+
+    public void NovoJogo () {
+        botaoClicado = true;
     }
 }
