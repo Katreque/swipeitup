@@ -35,14 +35,26 @@ public class Player : MonoBehaviour
         if (!Morreu) {
         
             //Para esquerda - Teclado
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && posicaoX != -constanteLateral) {
-                transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+
+                if (posicaoX == -constanteLateral) {
+                    transform.position = new Vector2(1.75f, constanteProfundidade);
+                } else {
+                    transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
+                }
+
                 anim.SetTrigger("Jump");
             }
 
             //Para direita - Teclado
-            if (Input.GetKeyDown(KeyCode.RightArrow) && posicaoX != constanteLateral) {
-                transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
+            if (Input.GetKeyDown(KeyCode.RightArrow)) {
+
+                if (posicaoX == constanteLateral) {
+                    transform.position = new Vector2(-1.75f, constanteProfundidade);
+                } else {
+                    transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
+                }
+
                 anim.SetTrigger("Jump");
             }
             
@@ -54,19 +66,27 @@ public class Player : MonoBehaviour
                 }
 
                 if (t.phase == TouchPhase.Ended) {
-                    Vector2 secondPressPos = t.position;          
-                    
-                    print(secondPressPos.x);                    
+                    Vector2 secondPressPos = t.position;                    
 
                     //Para esquerda - Swipe
-                    if((secondPressPos.x < firstPressPos.x) && posicaoX != -constanteLateral) {
-                        transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
+                    if((secondPressPos.x < firstPressPos.x)) {
+                        if (posicaoX == -constanteLateral) {
+                            transform.position = new Vector2(1.75f, constanteProfundidade);
+                        } else {
+                            transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
+                        }
+
                         anim.SetTrigger("Jump");
                     }
 
                     //Para direita - Swipe
-                    if((secondPressPos.x > firstPressPos.x) && posicaoX != constanteLateral) {
-                        transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
+                    if((secondPressPos.x > firstPressPos.x)) {
+                        if (posicaoX == constanteLateral) {
+                            transform.position = new Vector2(-1.75f, constanteProfundidade);
+                        } else {
+                            transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
+                        }
+
                         anim.SetTrigger("Jump");
                     }
 
