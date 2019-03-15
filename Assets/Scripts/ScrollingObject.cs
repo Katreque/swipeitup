@@ -8,7 +8,7 @@ public class ScrollingObject : MonoBehaviour
 
     void Start() {
         rb2d = GetComponent<Rigidbody2D> ();
-        rb2d.velocity = new Vector2(0, -1.5f);
+        rb2d.velocity = new Vector2(0, GameControl.instance.GetVelocidadeScrollAtual());
     }
 
     void Update() {
