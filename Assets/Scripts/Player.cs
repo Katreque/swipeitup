@@ -22,11 +22,11 @@ public class Player : MonoBehaviour
     }
 
     void FixedUpdate() {
-        if (collider && !rb2d.IsTouching(collider)) {
+        if (collider && !rb2d.IsTouching(collider) && !EmMovimentoPulo) {
             if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Jump")) {
-                //GameControl.instance.Morreu();
-                //anim.SetTrigger("Morreu");
-                //Morreu = true;
+                GameControl.instance.Morreu();
+                anim.SetTrigger("Morreu");
+                Morreu = true;
             }
         }
     }
@@ -42,11 +42,9 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.LeftArrow)) {
 
                     if (posicaoX == -constanteLateral) {
-                        ParabolaPuloEsquerda(transform.localPosition.x);
-                        //transform.position = new Vector2(1.75f, constanteProfundidade);
+                        StartCoroutine(ParabolaPuloEsquerdaLimite(transform.localPosition.x));
                     } else {
-                        ParabolaPuloEsquerda(transform.localPosition.x);
-                        //transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
+                        StartCoroutine(ParabolaPuloEsquerda(transform.localPosition.x));
                     }
 
                     anim.SetTrigger("Jump");
@@ -56,9 +54,9 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.RightArrow)) {
 
                     if (posicaoX == constanteLateral) {
-                        transform.position = new Vector2(-1.75f, constanteProfundidade);
+                        StartCoroutine(ParabolaPuloDireitaLimite(transform.localPosition.x));                    
                     } else {
-                        transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
+                        StartCoroutine(ParabolaPuloDireita(transform.localPosition.x));
                     }
 
                     anim.SetTrigger("Jump");
@@ -75,22 +73,22 @@ public class Player : MonoBehaviour
                         Vector2 secondPressPos = t.position;                    
 
                         //Para esquerda - Swipe
-                        if((secondPressPos.x < firstPressPos.x)) {
+                        if((secondPressPos.x < firstPressPos.x) && (Mathf.Abs(firstPressPos.x) - Mathf.Abs(secondPressPos.x) > 10f)) {
                             if (posicaoX == -constanteLateral) {
-                                transform.position = new Vector2(1.75f, constanteProfundidade);
+                                StartCoroutine(ParabolaPuloEsquerdaLimite(transform.localPosition.x));
                             } else {
-                                transform.position = new Vector2(posicaoX - 1.75f, constanteProfundidade);
+                                StartCoroutine(ParabolaPuloEsquerda(transform.localPosition.x));
                             }
 
                             anim.SetTrigger("Jump");
                         }
 
                         //Para direita - Swipe
-                        if((secondPressPos.x > firstPressPos.x)) {
+                        if((secondPressPos.x > firstPressPos.x) && (Mathf.Abs(secondPressPos.x) - Mathf.Abs(firstPressPos.x) > 10f)) {
                             if (posicaoX == constanteLateral) {
-                                transform.position = new Vector2(-1.75f, constanteProfundidade);
+                                StartCoroutine(ParabolaPuloDireitaLimite(transform.localPosition.x));
                             } else {
-                                transform.position = new Vector2(posicaoX + 1.75f, constanteProfundidade);
+                                StartCoroutine(ParabolaPuloDireita(transform.localPosition.x));
                             }
 
                             anim.SetTrigger("Jump");
@@ -111,20 +109,72 @@ public class Player : MonoBehaviour
         }
     }
 
-    void ParabolaPuloEsquerda(float posicaoInicialx) {
+    IEnumerator ParabolaPuloEsquerda(float posicaoInicialx) {
+        EmMovimentoPulo = true;
         float con = 0.25f;
-        for (int i = 0; i < 8; i++) {
+        float[] valoresY = new float[] {0f, 0.38f, 0.62f, 0.75f, 0.75f, 0.62f, 0.38f, 0f};
+
+        for (int i = 1; i < 8; i++) {
             float x = posicaoInicialx - (con*i);
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, (-Mathf.Pow(x, 2) - 1.75f * x) + constanteProfundidade), 100f);
+            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, valoresY[i] + constanteProfundidade), 100f);
+            yield return new WaitForSeconds(0.0325f);
         }
+
+        EmMovimentoPulo = false;
     }
 
-    void ParabolaPuloDireita(float posicaoInicialx) {
+    IEnumerator ParabolaPuloEsquerdaLimite(float posicaoInicialx) {
+        EmMovimentoPulo = true;
         float con = 0.25f;
-        for (int i = 0; i < 8; i++) {
+        float[] valoresY = new float[] {0f, 0.38f, 0.62f, 0.75f, 0.75f, 0.62f, 0.38f, 0f};
+
+        for (int i = 1; i < 4; i++) {
             float x = posicaoInicialx - (con*i);
-            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, (-Mathf.Pow(x, 2) + 1.75f * x) + constanteProfundidade), 100f);
+            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, valoresY[i] + constanteProfundidade), 100f);
+            yield return new WaitForSeconds(0.0325f);
         }
+
+        for (int i = 4; i < 8; i++) {
+            float x = 2.75f - (con*(i-3));
+            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, valoresY[i] + constanteProfundidade), 100f);
+            yield return new WaitForSeconds(0.0325f);
+        }
+
+        EmMovimentoPulo = false;
+    }
+
+    IEnumerator ParabolaPuloDireita(float posicaoInicialx) {
+        EmMovimentoPulo = true;
+        float con = 0.25f;
+        float[] valoresY = new float[] {0f, 0.38f, 0.62f, 0.75f, 0.75f, 0.62f, 0.38f, 0f};
+
+        for (int i = 1; i < 8; i++) {
+            float x = posicaoInicialx + (con*i);
+            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, valoresY[i] + constanteProfundidade), 100f);
+            yield return new WaitForSeconds(0.0325f);
+        }
+
+        EmMovimentoPulo = false;
+    }
+
+        IEnumerator ParabolaPuloDireitaLimite(float posicaoInicialx) {
+        EmMovimentoPulo = true;
+        float con = 0.25f;
+        float[] valoresY = new float[] {0f, 0.38f, 0.62f, 0.75f, 0.75f, 0.62f, 0.38f, 0f};
+
+        for (int i = 1; i < 4; i++) {
+            float x = posicaoInicialx + (con*i);
+            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, valoresY[i] + constanteProfundidade), 100f);
+            yield return new WaitForSeconds(0.0325f);
+        }
+
+        for (int i = 4; i < 8; i++) {
+            float x = -2.75f + (con*(i-3));
+            transform.position = Vector2.MoveTowards(transform.position, new Vector2(x, valoresY[i] + constanteProfundidade), 100f);
+            yield return new WaitForSeconds(0.0325f);
+        }
+
+        EmMovimentoPulo = false;
     }
 
     void OnTriggerEnter2D(Collider2D other) {
