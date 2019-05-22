@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class Player : MonoBehaviour
 
     private bool Morreu = false;
     private bool EmMovimentoPulo = false;
+    private bool botaoReiniciarJogo = false;
     private Rigidbody2D rb2d;
     private Animator anim;
     private Collider2D collider;
@@ -102,8 +105,17 @@ public class Player : MonoBehaviour
             if (Input.touchCount > 0) {
                 Touch t = Input.GetTouch(0);
 
-                if (t.phase == TouchPhase.Ended) {
-                    GameControl.instance.NovoJogo();
+                if (t.phase == TouchPhase.Began) { 
+                    if (EventSystem.current.IsPointerOverGameObject(t.fingerId)) {
+                        botaoReiniciarJogo = true;
+                    }
+                }
+
+                if (t.phase == TouchPhase.Ended) { 
+                    if (botaoReiniciarJogo) {
+                        botaoReiniciarJogo = false;
+                        GameControl.instance.NovoJogo();
+                    }
                 }
             }
         }
@@ -157,7 +169,7 @@ public class Player : MonoBehaviour
         EmMovimentoPulo = false;
     }
 
-        IEnumerator ParabolaPuloDireitaLimite(float posicaoInicialx) {
+    IEnumerator ParabolaPuloDireitaLimite(float posicaoInicialx) {
         EmMovimentoPulo = true;
         float con = 0.25f;
         float[] valoresY = new float[] {0f, 0.38f, 0.62f, 0.75f, 0.75f, 0.62f, 0.38f, 0f};
