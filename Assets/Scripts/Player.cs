@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
 {
     public float constanteLateral = 1.75f;
     public float constanteProfundidade = -4f;
-
     private bool Morreu = false;
     private bool EmMovimentoPulo = false;
     private bool botaoReiniciarJogo = false;

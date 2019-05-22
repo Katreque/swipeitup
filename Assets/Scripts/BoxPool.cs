@@ -1,16 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class BoxPool : MonoBehaviour
 {
     public GameObject caixasPrefab;
-
     private float[] colunasPossiveis = new float[] {-1.75f, 0f, 1.75f};
     private Vector2 objectPoolPosition = new Vector2 (0f, 0f); 
     private GameObject[] caixas = new GameObject[10];
+    private Persistente arquivoGame;
+    private string path;
 
     void Start() {
+        path = Path.Combine(Application.persistentDataPath, "genes.txt");
+
         for (int i = 0; i < 10; i++) {
             caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
         }
@@ -44,5 +48,37 @@ public class BoxPool : MonoBehaviour
                 caixas[i].transform.position = new Vector2(colunasPossiveis[randomXPosition], 10.56f);
             }
         }
+    }
+
+    void SalvarArquivoJogo(Persistente data) {
+        string jsonString = JsonUtility.ToJson(data);
+
+        using (StreamWriter streamWriter = File.CreateText(path)) {
+            streamWriter.Write(jsonString);
+        }
+    }
+
+    void LoadArquivoJogo() {
+
+    }
+
+    void GerarPopulacaoInicial() {
+
+    }
+
+    void FuncaoAvaliacao() {
+
+    }
+
+    void Selecao() {
+
+    }
+
+    void Crossover() {
+
+    }
+
+    void Mutacao() {
+
     }
 }
