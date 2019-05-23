@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;   
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -10,21 +11,29 @@ public class BoxPool : MonoBehaviour
     private Vector2 objectPoolPosition = new Vector2 (0f, 0f); 
     private GameObject[] caixas = new GameObject[10];
     private Persistente arquivoGame;
+    private List<Cromossomo> cromossomosCriados;
     private string path;
 
     void Start() {
         path = Path.Combine(Application.persistentDataPath, "genes.txt");
 
-        for (int i = 0; i < 10; i++) {
-            caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
+        try {
+            arquivoGame = LoadArquivoJogo();
+        } catch(Exception) {
+            arquivoGame.iniciouGame = false;
+            SalvarArquivoJogo(arquivoGame);
         }
 
-        caixas[0].transform.position = new Vector2(0f, 0f);
-        caixas[1].transform.position = new Vector2(0f, 1.27f);
+        if (arquivoGame.iniciouGame) {
 
-        for (int i = 2; i < 10; i++) {
-            int randomXPosition = Random.Range(0, 3);
-            caixas[i].transform.position = new Vector2(colunasPossiveis[randomXPosition], 1.27f * (float)i);
+        } else {
+            Cromossomo c = new Cromossomo();
+            c.GerarPopulacaoInicial();
+            cromossomosCriados.Add(c);
+
+            for (int i = 0; i < 10; i++) {
+                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(c.cromossomo[i], 1.27f * (float)i), Quaternion.identity);
+            }
         }
     }
 
@@ -44,7 +53,7 @@ public class BoxPool : MonoBehaviour
                 caixas[i] = null;
                 caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
 
-                int randomXPosition = Random.Range(0, 3);
+                int randomXPosition = UnityEngine.Random.Range(0, 3);
                 caixas[i].transform.position = new Vector2(colunasPossiveis[randomXPosition], 10.56f);
             }
         }
@@ -58,12 +67,11 @@ public class BoxPool : MonoBehaviour
         }
     }
 
-    void LoadArquivoJogo() {
-
-    }
-
-    void GerarPopulacaoInicial() {
-
+    Persistente LoadArquivoJogo() {
+        using (StreamReader streamReader = File.OpenText(path)) {
+            string jsonString = streamReader.ReadToEnd();
+            return JsonUtility.FromJson<Persistente>(jsonString);
+        }
     }
 
     void FuncaoAvaliacao() {
