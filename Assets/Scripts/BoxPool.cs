@@ -8,10 +8,10 @@ public class BoxPool : MonoBehaviour
 {
     public GameObject caixasPrefab;
     private float[] colunasPossiveis = new float[] {-1.75f, 0f, 1.75f};
-    private Vector2 objectPoolPosition = new Vector2 (0f, 0f); 
+    private Vector2 objectPoolPosition = new Vector2 (0f, 0f);
     private GameObject[] caixas = new GameObject[10];
     private Persistente arquivoGame;
-    private List<Cromossomo> cromossomosCriados;
+    private List<Cromossomo> cromossomosCriados = new List<Cromossomo>();
     private string path;
 
     void Start() {
@@ -20,7 +20,7 @@ public class BoxPool : MonoBehaviour
         try {
             arquivoGame = LoadArquivoJogo();
         } catch(Exception) {
-            arquivoGame.iniciouGame = false;
+            arquivoGame = new Persistente();
             SalvarArquivoJogo(arquivoGame);
         }
 
@@ -31,8 +31,10 @@ public class BoxPool : MonoBehaviour
             c.GerarPopulacaoInicial();
             cromossomosCriados.Add(c);
 
-            for (int i = 0; i < 10; i++) {
-                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(c.cromossomo[i], 1.27f * (float)i), Quaternion.identity);
+            caixas[0] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[1], 0), Quaternion.identity);
+
+            for (int i = 1; i < 10; i++) {
+                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c.cromossomo[i]], 1.27f * (float)i), Quaternion.identity);
             }
         }
     }

@@ -214,7 +214,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!61 &56995107
 BoxCollider2D:
@@ -229,7 +229,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.1331254}
+  m_Offset: {x: 0.0043541305, y: -0.1484355}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -240,7 +240,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.29, y: 0.073487654}
+  m_Size: {x: 0.20511386, y: 0.07164711}
   m_EdgeRadius: 0
 --- !u!114 &56995108
 MonoBehaviour:
@@ -256,6 +256,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   constanteLateral: 1.75
   constanteProfundidade: -4
+  caixasPrefab: {fileID: 1270009777368949877, guid: 12af062658b9d2948b56306a76ec3c91,
+    type: 3}
 --- !u!95 &56995109
 Animator:
   serializedVersion: 3
@@ -366,7 +368,7 @@ GameObject:
   - component: {fileID: 279019926}
   - component: {fileID: 279019925}
   - component: {fileID: 279019924}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -611,7 +613,7 @@ GameObject:
   - component: {fileID: 1000368256}
   - component: {fileID: 1000368255}
   - component: {fileID: 1000368257}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: scoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -734,10 +736,10 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1093341660}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -765,7 +767,7 @@ GameObject:
   - component: {fileID: 1214270489}
   - component: {fileID: 1214270488}
   - component: {fileID: 1214270487}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: gameOverText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -989,7 +991,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1096,7 +1098,7 @@ GameObject:
   - component: {fileID: 1572999474}
   - component: {fileID: 1572999473}
   - component: {fileID: 1572999472}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: gameOverButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1487,7 +1489,7 @@ BoxCollider2D:
   m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1514,7 +1516,7 @@ GameObject:
   - component: {fileID: 1924575961}
   - component: {fileID: 1924575963}
   - component: {fileID: 1924575962}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
