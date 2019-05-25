@@ -12,21 +12,21 @@ public class BoxPool : MonoBehaviour
     private GameObject[] caixas = new GameObject[20];
     private Persistente arquivoGame;
     private List<Cromossomo> cromossomosUsados = new List<Cromossomo>();
-    private string path;
 
     void Start() {
-        path = Path.Combine(Application.persistentDataPath, "genes.txt");
-
         try {
-            arquivoGame = LoadArquivoJogo();
+            arquivoGame = SaveControl.LoadArquivoJogo();
+            Debug.Log(arquivoGame.cromossomos.Count);
         } catch(Exception) {
             arquivoGame = new Persistente();
-            SalvarArquivoJogo(arquivoGame);
         }
 
         if (arquivoGame.iniciouGame) {
 
+
+            Debug.Log(arquivoGame.cromossomos.Count);
         } else {
+            arquivoGame.iniciouGame = true;
             Cromossomo c1 = new Cromossomo();
             c1.GerarPopulacaoInicial();
             cromossomosUsados.Add(c1);
@@ -34,7 +34,7 @@ public class BoxPool : MonoBehaviour
             caixas[0] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[1], 0), Quaternion.identity);
 
             for (int i = 1; i < 10; i++) {
-                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c1.cromossomo[i]], 1.27f * (float)i), Quaternion.identity);
+                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c1.cromossomo[i]], 1.28f * (float)i), Quaternion.identity);
             }
 
             Cromossomo c2 = new Cromossomo();
@@ -42,8 +42,11 @@ public class BoxPool : MonoBehaviour
             cromossomosUsados.Add(c2);
 
             for (int i = 0; i < 10; i++) {
-                caixas[i+10] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c2.cromossomo[i]], 1.27f * (float)i+10), Quaternion.identity);
+                caixas[i+10] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c2.cromossomo[i]], 1.28f * (float)(i+10)), Quaternion.identity);
             }
+
+            arquivoGame.cromossomos = cromossomosUsados;
+            SaveControl.AtualizarArquivoJogo(arquivoGame);
         }
     }
 
@@ -52,14 +55,15 @@ public class BoxPool : MonoBehaviour
             GameControl.instance.atualizaVelocidadeMundo = false;
 
             for (int i = 0; i < 20; i++) {
-                //caixas[i].GetComponent<Rigidbody2D>().velocity = new Vector2(0, GameControl.instance.GetVelocidadeScrollAtual());
+                caixas[i].GetComponent<Rigidbody2D>().velocity = new Vector2(0, GameControl.instance.GetVelocidadeScrollAtual());
             }  
         }
 
         if (arquivoGame.iniciouGame) {
+ 
 
         } else {
-            if (caixas[9].transform.position.y < -2f) {
+            if (caixas[9].transform.position.y < -1.64f) {
                 Cromossomo c = new Cromossomo();
                 c.GerarPopulacaoInicial();
                 cromossomosUsados.Add(c);
@@ -67,30 +71,28 @@ public class BoxPool : MonoBehaviour
                 for (int i = 0; i < 10; i++) {
                     Destroy(caixas[i]);
                     caixas[i] = null;
-                    caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
-                    caixas[i].transform.position = new Vector2(colunasPossiveis[c.cromossomo[i]], 10.56f + (1.27f * (float)i));
+                    caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c.cromossomo[i]], 12.43f + (1.28f * (float)i)), Quaternion.identity);
                 }
-            }            
+
+                arquivoGame.cromossomos = cromossomosUsados;
+                SaveControl.AtualizarArquivoJogo(arquivoGame);
+            }
+
+            if (caixas[19].transform.position.y < -1.64f) {
+                Cromossomo c = new Cromossomo();
+                c.GerarPopulacaoInicial();
+                cromossomosUsados.Add(c);
+
+                for (int i = 0; i < 10; i++) {
+                    Destroy(caixas[i+10]);
+                    caixas[i+10] = null;
+                    caixas[i+10] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c.cromossomo[i]], 12.43f + (1.28f * (float)i)), Quaternion.identity);
+                }
+
+                arquivoGame.cromossomos = cromossomosUsados;
+                SaveControl.AtualizarArquivoJogo(arquivoGame);
+            }        
         }
-    }
-
-    void SalvarArquivoJogo(Persistente data) {
-        string jsonString = JsonUtility.ToJson(data);
-
-        using (StreamWriter streamWriter = File.CreateText(path)) {
-            streamWriter.Write(jsonString);
-        }
-    }
-
-    Persistente LoadArquivoJogo() {
-        using (StreamReader streamReader = File.OpenText(path)) {
-            string jsonString = streamReader.ReadToEnd();
-            return JsonUtility.FromJson<Persistente>(jsonString);
-        }
-    }
-
-    void FuncaoAvaliacao() {
-
     }
 
     void Selecao() {

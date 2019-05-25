@@ -256,8 +256,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   constanteLateral: 1.75
   constanteProfundidade: -4
-  caixasPrefab: {fileID: 1270009777368949877, guid: 12af062658b9d2948b56306a76ec3c91,
-    type: 3}
 --- !u!95 &56995109
 Animator:
   serializedVersion: 3

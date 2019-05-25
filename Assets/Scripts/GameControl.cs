@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -51,6 +51,7 @@ public class GameControl : MonoBehaviour
     public void Morreu() {
         gameOverText.SetActive(true);
         gameOver = true;
+        SaveControl.SalvarArquivoJogo();
     }
 
     public void NovoJogo () {

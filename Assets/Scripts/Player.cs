@@ -17,7 +17,6 @@ public class Player : MonoBehaviour
     private Animator anim;
     private Collider2D colliderPlayer;
     private Collider2D collider;
-
     Vector2 firstPressPos;
 
     void Start() {
