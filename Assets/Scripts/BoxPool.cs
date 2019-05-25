@@ -9,9 +9,9 @@ public class BoxPool : MonoBehaviour
     public GameObject caixasPrefab;
     private float[] colunasPossiveis = new float[] {-1.75f, 0f, 1.75f};
     private Vector2 objectPoolPosition = new Vector2 (0f, 0f);
-    private GameObject[] caixas = new GameObject[10];
+    private GameObject[] caixas = new GameObject[20];
     private Persistente arquivoGame;
-    private List<Cromossomo> cromossomosCriados = new List<Cromossomo>();
+    private List<Cromossomo> cromossomosUsados = new List<Cromossomo>();
     private string path;
 
     void Start() {
@@ -27,14 +27,22 @@ public class BoxPool : MonoBehaviour
         if (arquivoGame.iniciouGame) {
 
         } else {
-            Cromossomo c = new Cromossomo();
-            c.GerarPopulacaoInicial();
-            cromossomosCriados.Add(c);
+            Cromossomo c1 = new Cromossomo();
+            c1.GerarPopulacaoInicial();
+            cromossomosUsados.Add(c1);
 
             caixas[0] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[1], 0), Quaternion.identity);
 
             for (int i = 1; i < 10; i++) {
-                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c.cromossomo[i]], 1.27f * (float)i), Quaternion.identity);
+                caixas[i] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c1.cromossomo[i]], 1.27f * (float)i), Quaternion.identity);
+            }
+
+            Cromossomo c2 = new Cromossomo();
+            c2.GerarPopulacaoInicial();
+            cromossomosUsados.Add(c2);
+
+            for (int i = 0; i < 10; i++) {
+                caixas[i+10] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[c2.cromossomo[i]], 1.27f * (float)i+10), Quaternion.identity);
             }
         }
     }
@@ -43,21 +51,26 @@ public class BoxPool : MonoBehaviour
         if (GameControl.instance.atualizaVelocidadeMundo) {
             GameControl.instance.atualizaVelocidadeMundo = false;
 
-            for (int i = 0; i < 10; i++) {
-                caixas[i].GetComponent<Rigidbody2D>().velocity = new Vector2(0, GameControl.instance.GetVelocidadeScrollAtual());
+            for (int i = 0; i < 20; i++) {
+                //caixas[i].GetComponent<Rigidbody2D>().velocity = new Vector2(0, GameControl.instance.GetVelocidadeScrollAtual());
             }  
         }
 
-        for (int i = 0; i < 10; i++) {
-            if (caixas[i].transform.position.y < -2f) {
-                
-                Destroy(caixas[i]);
-                caixas[i] = null;
-                caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
+        if (arquivoGame.iniciouGame) {
 
-                int randomXPosition = UnityEngine.Random.Range(0, 3);
-                caixas[i].transform.position = new Vector2(colunasPossiveis[randomXPosition], 10.56f);
-            }
+        } else {
+            if (caixas[9].transform.position.y < -2f) {
+                Cromossomo c = new Cromossomo();
+                c.GerarPopulacaoInicial();
+                cromossomosUsados.Add(c);
+
+                for (int i = 0; i < 10; i++) {
+                    Destroy(caixas[i]);
+                    caixas[i] = null;
+                    caixas[i] = (GameObject)Instantiate(caixasPrefab, objectPoolPosition, Quaternion.identity);
+                    caixas[i].transform.position = new Vector2(colunasPossiveis[c.cromossomo[i]], 10.56f + (1.27f * (float)i));
+                }
+            }            
         }
     }
 

@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb2d;
     private Animator anim;
     private Collider2D colliderPlayer;
+    private Collider2D collider;
 
     Vector2 firstPressPos;
 
@@ -27,7 +28,7 @@ public class Player : MonoBehaviour
     }
 
     void Update() {
-        if (!colliderPlayer.IsTouchingLayers(layerCaixas) && !EmMovimentoPulo) {
+        if (collider && !colliderPlayer.IsTouchingLayers(layerCaixas) && !EmMovimentoPulo) {
             GameControl.instance.Morreu();
             anim.SetTrigger("Morreu");
             Morreu = true;
@@ -73,24 +74,24 @@ public class Player : MonoBehaviour
 
                         //Para esquerda - Swipe
                         if((secondPressPos.x < firstPressPos.x) && (Mathf.Abs(firstPressPos.x) - Mathf.Abs(secondPressPos.x) > 10f)) {
+                            anim.SetTrigger("Jump");
+
                             if (posicaoX == -constanteLateral) {
                                 StartCoroutine(ParabolaPuloEsquerdaLimite(transform.localPosition.x));
                             } else {
                                 StartCoroutine(ParabolaPuloEsquerda(transform.localPosition.x));
                             }
-
-                            anim.SetTrigger("Jump");
                         }
 
                         //Para direita - Swipe
                         if((secondPressPos.x > firstPressPos.x) && (Mathf.Abs(secondPressPos.x) - Mathf.Abs(firstPressPos.x) > 10f)) {
+                            anim.SetTrigger("Jump");
+
                             if (posicaoX == constanteLateral) {
                                 StartCoroutine(ParabolaPuloDireitaLimite(transform.localPosition.x));
                             } else {
                                 StartCoroutine(ParabolaPuloDireita(transform.localPosition.x));
                             }
-
-                            anim.SetTrigger("Jump");
                         }
 
                     }
@@ -191,5 +192,9 @@ public class Player : MonoBehaviour
 
         anim.SetTrigger("Idle");
         EmMovimentoPulo = false;
+    }
+
+    void OnTriggerEnter2D(Collider2D other) {
+        collider = other;
     }
 }
