@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     private bool Morreu = false;
     private bool EmMovimentoPulo = false;
     private bool botaoReiniciarJogo = false;
+    private bool botaoReiniciarIA = false;
     private LayerMask layerCaixas;
     private Rigidbody2D rb2d;
     private Animator anim;
@@ -101,17 +102,32 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space)) { 
                 GameControl.instance.NovoJogo();
             }
+
+            if (Input.GetKeyDown(KeyCode.L)) {
+                SaveControl.ResetaIAJogo();
+            }
             
             if (Input.touchCount > 0) {
                 Touch t = Input.GetTouch(0);
 
-                if (t.phase == TouchPhase.Began) { 
-                    if (EventSystem.current.IsPointerOverGameObject(t.fingerId)) {
+                if (t.phase == TouchPhase.Began) {
+                    Debug.Log(EventSystem.current.currentSelectedGameObject);
+
+                    if (EventSystem.current.currentSelectedGameObject.name == "resetIaButton") {
+                        botaoReiniciarIA = true;
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.name == "gameOverButton") {
                         botaoReiniciarJogo = true;
                     }
                 }
 
                 if (t.phase == TouchPhase.Ended) { 
+                    if (botaoReiniciarIA) {
+                        botaoReiniciarIA = false;
+                        SaveControl.ResetaIAJogo();
+                    }
+
                     if (botaoReiniciarJogo) {
                         botaoReiniciarJogo = false;
                         GameControl.instance.NovoJogo();

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -9,6 +8,7 @@ public class GameControl : MonoBehaviour
     public static GameControl instance;
     public GameObject gameOverText;
     public Text scoreText;
+    public Text nivelIA;
     public bool gameOver = false;
     public bool botaoClicado = false;
     public bool atualizaVelocidadeMundo = false;
@@ -48,6 +48,10 @@ public class GameControl : MonoBehaviour
         scoreText.text = score.ToString();
     }
 
+    public void PontuacaoIA(int nivel) {
+        nivelIA.text = nivel.ToString();
+    }
+
     public void Morreu() {
         gameOverText.SetActive(true);
         gameOver = true;
@@ -60,7 +64,7 @@ public class GameControl : MonoBehaviour
 
     public void AtualizaVelocidadeScroll() {
         atualizaVelocidadeMundo = true;
-        velocidadeScrollAtual += -0.05f;
+        velocidadeScrollAtual += -0.02f;
     }
 
     public float GetVelocidadeScrollAtual() {
