@@ -12,28 +12,28 @@ public class Player : MonoBehaviour
     private bool Morreu = false;
     private bool EmMovimentoPulo = false;
     private bool botaoReiniciarJogo = false;
+    private bool botaoReiniciarIA = false;
+    private LayerMask layerCaixas;
     private Rigidbody2D rb2d;
     private Animator anim;
+    private Collider2D colliderPlayer;
     private Collider2D collider;
-
     Vector2 firstPressPos;
 
     void Start() {
         rb2d = GetComponent<Rigidbody2D> ();
         anim = GetComponent<Animator> ();
-    }
-
-    void FixedUpdate() {
-        if (collider && !rb2d.IsTouching(collider) && !EmMovimentoPulo) {
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Jump")) {
-                GameControl.instance.Morreu();
-                anim.SetTrigger("Morreu");
-                Morreu = true;
-            }
-        }
+        colliderPlayer = GetComponent<BoxCollider2D> ();
+        layerCaixas = LayerMask.GetMask("Caixas");
     }
 
     void Update() {
+        if (collider && !colliderPlayer.IsTouchingLayers(layerCaixas) && !EmMovimentoPulo) {
+            GameControl.instance.Morreu();
+            anim.SetTrigger("Morreu");
+            Morreu = true;
+        }
+
         float posicaoX = transform.localPosition.x;
 
         if (!Morreu) {
@@ -42,26 +42,24 @@ public class Player : MonoBehaviour
 
                 //Para esquerda - Teclado
                 if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+                    anim.SetTrigger("Jump");
 
                     if (posicaoX == -constanteLateral) {
                         StartCoroutine(ParabolaPuloEsquerdaLimite(transform.localPosition.x));
                     } else {
                         StartCoroutine(ParabolaPuloEsquerda(transform.localPosition.x));
                     }
-
-                    anim.SetTrigger("Jump");
                 }
 
                 //Para direita - Teclado
                 if (Input.GetKeyDown(KeyCode.RightArrow)) {
+                    anim.SetTrigger("Jump");
 
                     if (posicaoX == constanteLateral) {
                         StartCoroutine(ParabolaPuloDireitaLimite(transform.localPosition.x));                    
                     } else {
                         StartCoroutine(ParabolaPuloDireita(transform.localPosition.x));
                     }
-
-                    anim.SetTrigger("Jump");
                 }
                 
                 if (Input.touchCount > 0) {
@@ -76,24 +74,24 @@ public class Player : MonoBehaviour
 
                         //Para esquerda - Swipe
                         if((secondPressPos.x < firstPressPos.x) && (Mathf.Abs(firstPressPos.x) - Mathf.Abs(secondPressPos.x) > 10f)) {
+                            anim.SetTrigger("Jump");
+
                             if (posicaoX == -constanteLateral) {
                                 StartCoroutine(ParabolaPuloEsquerdaLimite(transform.localPosition.x));
                             } else {
                                 StartCoroutine(ParabolaPuloEsquerda(transform.localPosition.x));
                             }
-
-                            anim.SetTrigger("Jump");
                         }
 
                         //Para direita - Swipe
                         if((secondPressPos.x > firstPressPos.x) && (Mathf.Abs(secondPressPos.x) - Mathf.Abs(firstPressPos.x) > 10f)) {
+                            anim.SetTrigger("Jump");
+
                             if (posicaoX == constanteLateral) {
                                 StartCoroutine(ParabolaPuloDireitaLimite(transform.localPosition.x));
                             } else {
                                 StartCoroutine(ParabolaPuloDireita(transform.localPosition.x));
                             }
-
-                            anim.SetTrigger("Jump");
                         }
 
                     }
@@ -101,16 +99,35 @@ public class Player : MonoBehaviour
             }
         
         } else {
+            if (Input.GetKeyDown(KeyCode.Space)) { 
+                GameControl.instance.NovoJogo();
+            }
+
+            if (Input.GetKeyDown(KeyCode.L)) {
+                SaveControl.ResetaIAJogo();
+            }
+            
             if (Input.touchCount > 0) {
                 Touch t = Input.GetTouch(0);
 
-                if (t.phase == TouchPhase.Began) { 
-                    if (EventSystem.current.IsPointerOverGameObject(t.fingerId)) {
+                if (t.phase == TouchPhase.Began) {
+                    Debug.Log(EventSystem.current.currentSelectedGameObject);
+
+                    if (EventSystem.current.currentSelectedGameObject.name == "resetIaButton") {
+                        botaoReiniciarIA = true;
+                    }
+
+                    if (EventSystem.current.currentSelectedGameObject.name == "gameOverButton") {
                         botaoReiniciarJogo = true;
                     }
                 }
 
                 if (t.phase == TouchPhase.Ended) { 
+                    if (botaoReiniciarIA) {
+                        botaoReiniciarIA = false;
+                        SaveControl.ResetaIAJogo();
+                    }
+
                     if (botaoReiniciarJogo) {
                         botaoReiniciarJogo = false;
                         GameControl.instance.NovoJogo();
@@ -131,6 +148,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.0325f);
         }
 
+        anim.SetTrigger("Idle");
         EmMovimentoPulo = false;
     }
 
@@ -151,6 +169,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.0325f);
         }
 
+        anim.SetTrigger("Idle");
         EmMovimentoPulo = false;
     }
 
@@ -165,6 +184,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.0325f);
         }
 
+        anim.SetTrigger("Idle");
         EmMovimentoPulo = false;
     }
 
@@ -185,12 +205,11 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.0325f);
         }
 
+        anim.SetTrigger("Idle");
         EmMovimentoPulo = false;
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.name == "box") {
-            collider = other;
-        }
+        collider = other;
     }
 }
