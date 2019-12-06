@@ -9,6 +9,8 @@ public class GameControl : MonoBehaviour
     public GameObject gameOverText;
     public Text scoreText;
     public Text nivelIA;
+    public Text evolveState;
+    public Text highscoreText;
     public bool gameOver = false;
     public bool botaoClicado = false;
     public bool atualizaVelocidadeMundo = false;
@@ -26,6 +28,8 @@ public class GameControl : MonoBehaviour
 
     void Start() {
         scoreTemp = score;
+        highscoreText.text = SaveControl.RetornarHighScore().ToString();
+        this.RetornaStringFormatadaEvolutionState();
     }
 
     void FixedUpdate() {
@@ -76,5 +80,13 @@ public class GameControl : MonoBehaviour
 
     public float GetVelocidadeScrollAtual() {
         return velocidadeScrollAtual;
+    }
+
+    private void RetornaStringFormatadaEvolutionState() {
+        if (SaveControl.RetornarEvolutionState() == true) {
+            evolveState.text = "Dificultando";
+        } else {
+            evolveState.text = "Facilitando";
+        }
     }
 }

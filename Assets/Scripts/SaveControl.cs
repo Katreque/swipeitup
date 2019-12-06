@@ -24,14 +24,6 @@ public static class SaveControl {
         SalvarArquivoJogo();
     }
 
-    public static void SetarHighScoreTotal(int score) {
-        dadosJogador.highScoreTotal = score;
-    }
-
-    public static int RetornarHighScoreTotal() {
-        return dadosJogador.highScoreTotal;
-    }
-
     public static void SetarHighScore(int score) {
         dadosJogador.highScore = score;
     }

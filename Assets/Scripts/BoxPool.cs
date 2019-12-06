@@ -119,7 +119,6 @@ public class BoxPool : MonoBehaviour {
         }
 
         mediaUltimosScores = (mediaUltimosScores - maiorElemento) / (arquivoGame.lastScores.Length - 1);
-        Debug.Log(SaveControl.RetornarEvolutionState());
 
         if (mediaUltimosScores < (maiorElemento / 2)) {
             arquivoGame.evolutionState = false;
