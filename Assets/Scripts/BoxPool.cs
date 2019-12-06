@@ -21,7 +21,9 @@ public class BoxPool : MonoBehaviour {
 
         if (arquivoGame.iniciouGame) {
             cromossomosUsados = arquivoGame.cromossomos;
-            Evolucao();
+
+            this.AjustaArrayScore();
+            this.Evolucao();
 
             for (int i = 0; i < 100; i++) {
                 for (int j = 0; j < 10; j++) {
@@ -34,7 +36,7 @@ public class BoxPool : MonoBehaviour {
             caixas[0] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[1], 0), Quaternion.identity);
 
         } else {
-            GerarPopulacaoInicial();
+            this.GerarPopulacaoInicial();
 
             for (int i = 0; i < 100; i++) {
                 for (int j = 0; j < 10; j++) {
@@ -47,7 +49,7 @@ public class BoxPool : MonoBehaviour {
             caixas[0] = (GameObject)Instantiate(caixasPrefab, new Vector2(colunasPossiveis[1], 0), Quaternion.identity);
         }
 
-        VerificarPontuacao();
+        this.VerificarPontuacao();
     }
 
     void FixedUpdate() {
@@ -69,6 +71,12 @@ public class BoxPool : MonoBehaviour {
         }
 
         arquivoGame.cromossomos = cromossomosUsados;
+        arquivoGame.evolutionState = true;
+
+        for (int i = 0; i < arquivoGame.lastScores.Length; i++) {
+            arquivoGame.lastScores[i] = -1;
+        }
+
         SaveControl.AtualizarArquivoJogo(arquivoGame);
     }
 
@@ -82,30 +90,94 @@ public class BoxPool : MonoBehaviour {
         GameControl.instance.PontuacaoIA(total/100);
     }
 
+    void AjustaArrayScore() {
+        bool todasPartidasConcluidas = true;
+
+        for (int i = 0; i < arquivoGame.lastScores.Length; i++) {
+            if (arquivoGame.lastScores[i] == -1) {
+                arquivoGame.lastScores[i] = SaveControl.RetornarLastScore();
+                todasPartidasConcluidas = false;
+                break;
+            }
+        }
+
+        if (todasPartidasConcluidas) {
+            this.SetaDirecaoEvolucao();
+        }
+    }
+
+    void SetaDirecaoEvolucao() {
+        int mediaUltimosScores = 0;
+        int maiorElemento = 0;
+
+        for (int i = 0; i < arquivoGame.lastScores.Length; i++) {
+            mediaUltimosScores += arquivoGame.lastScores[i];
+
+            if (maiorElemento < arquivoGame.lastScores[i]) {
+                maiorElemento = arquivoGame.lastScores[i];
+            }
+        }
+
+        mediaUltimosScores = (mediaUltimosScores - maiorElemento) / (arquivoGame.lastScores.Length - 1);
+        Debug.Log(SaveControl.RetornarEvolutionState());
+
+        if (mediaUltimosScores < (maiorElemento / 2)) {
+            arquivoGame.evolutionState = false;
+        } else {
+            arquivoGame.evolutionState = true;
+        }
+
+        for (int i = 0; i < arquivoGame.lastScores.Length; i++) {
+            arquivoGame.lastScores[i] = -1;
+        }
+
+        SaveControl.AtualizarArquivoJogo(arquivoGame);
+    }
+
     void Evolucao() {
         Selecao();
     }
 
     void Selecao() {
-        //aptidaoParcial += (arquivoGame.cromossomos[i].FuncaoAvaliacao() / aptidaoTotal);
         Cromossomo primeiro = new Cromossomo();
         Cromossomo segundo = new Cromossomo();
-        int maior = 0;
 
-        for (int i = 0; i < cromossomosUsados.Count; i++) {
-            if (cromossomosUsados[i].FuncaoAvaliacao() > maior) {
+        if (SaveControl.RetornarEvolutionState()) {
+            int maior = 0;
 
-                maior = cromossomosUsados[i].FuncaoAvaliacao();
+            for (int i = 0; i < cromossomosUsados.Count; i++) {
+                if (cromossomosUsados[i].FuncaoAvaliacao() >= maior) {
 
-                if (i == 0) {
-                    primeiro = cromossomosUsados[i];
-                    segundo = cromossomosUsados[i];
-                } else {
-                    segundo = primeiro;
-                    primeiro = cromossomosUsados[i];
+                    maior = cromossomosUsados[i].FuncaoAvaliacao();
+
+                    if (i == 0) {
+                        primeiro = cromossomosUsados[i];
+                        segundo = cromossomosUsados[i];
+                    } else {
+                        segundo = primeiro;
+                        primeiro = cromossomosUsados[i];
+                    }
+                }
+            }
+        } else {
+            int menor = 10;
+
+            for (int i = 0; i < cromossomosUsados.Count; i++) {
+                if (cromossomosUsados[i].FuncaoAvaliacao() <= menor) {
+
+                    menor = cromossomosUsados[i].FuncaoAvaliacao();
+
+                    if (i == 0) {
+                        primeiro = cromossomosUsados[i];
+                        segundo = cromossomosUsados[i];
+                    } else {
+                        segundo = primeiro;
+                        primeiro = cromossomosUsados[i];
+                    }
                 }
             }
         }
+        
 
         Crossover(primeiro, segundo);
     }
@@ -114,15 +186,12 @@ public class BoxPool : MonoBehaviour {
         Cromossomo temp;
         temp = primeiro;
 
-        primeiro.cromossomo[4] = segundo.cromossomo[4];
-        primeiro.cromossomo[5] = segundo.cromossomo[5];
-        primeiro.cromossomo[6] = segundo.cromossomo[6];
-        primeiro.cromossomo[7] = segundo.cromossomo[7];
+        int pontoCorte = UnityEngine.Random.Range(1, 9);
 
-        segundo.cromossomo[4] = temp.cromossomo[4];
-        segundo.cromossomo[5] = temp.cromossomo[5];
-        segundo.cromossomo[6] = temp.cromossomo[6];
-        segundo.cromossomo[7] = temp.cromossomo[7];
+        for (int i = 0; i < pontoCorte; i++) {
+            primeiro.cromossomo[i] = segundo.cromossomo[i];
+            segundo.cromossomo[i] = temp.cromossomo[i];
+        }
 
         Mutacao(primeiro, segundo);
     }
@@ -130,7 +199,7 @@ public class BoxPool : MonoBehaviour {
     void Mutacao(Cromossomo primeiro, Cromossomo segundo) {
         int chance = UnityEngine.Random.Range(0, 100);
 
-        if (chance <= 5 && chance >= 0) {
+        if (chance <= 10 && chance >= 0) {
             int cromossomo = UnityEngine.Random.Range(0, 1);
             int numCromossomo = UnityEngine.Random.Range(0, 7);
             int valGene = UnityEngine.Random.Range(0, 2);
@@ -148,30 +217,45 @@ public class BoxPool : MonoBehaviour {
     void ProximaGeracao(Cromossomo primeiro, Cromossomo segundo) {
         Cromossomo penultimo = new Cromossomo();
         Cromossomo ultimo = new Cromossomo();
-        int menor = 10;
 
-        for (int i = 0; i < cromossomosUsados.Count; i++) {
-            if (cromossomosUsados[i].FuncaoAvaliacao() < menor) {
+        if (SaveControl.RetornarEvolutionState()) {
+            int menor = 10;
 
-                menor = cromossomosUsados[i].FuncaoAvaliacao();
+            for (int i = 0; i < cromossomosUsados.Count; i++) {
+                if (cromossomosUsados[i].FuncaoAvaliacao() <= menor) {
 
-                if (i == 0) {
-                    penultimo = cromossomosUsados[i];
-                    ultimo = cromossomosUsados[i];
-                } else {
-                    ultimo = penultimo;
-                    penultimo = cromossomosUsados[i];
+                    menor = cromossomosUsados[i].FuncaoAvaliacao();
+
+                    if (i == 0) {
+                        penultimo = cromossomosUsados[i];
+                        ultimo = cromossomosUsados[i];
+                    } else {
+                        ultimo = penultimo;
+                        penultimo = cromossomosUsados[i];
+                    }
+                }
+            }
+        } else {
+            int maior = 0;
+
+            for (int i = 0; i < cromossomosUsados.Count; i++) {
+                if (cromossomosUsados[i].FuncaoAvaliacao() >= maior) {
+
+                    maior = cromossomosUsados[i].FuncaoAvaliacao();
+
+                    if (i == 0) {
+                        penultimo = cromossomosUsados[i];
+                        ultimo = cromossomosUsados[i];
+                    } else {
+                        ultimo = penultimo;
+                        penultimo = cromossomosUsados[i];
+                    }
                 }
             }
         }
 
-        cromossomosUsados[penultimo.id] = primeiro;
-        cromossomosUsados[ultimo.id] = segundo;
-
-        Debug.Log(primeiro.FuncaoAvaliacao());
-        Debug.Log(segundo.FuncaoAvaliacao());
-        Debug.Log(penultimo.FuncaoAvaliacao());
-        Debug.Log(ultimo.FuncaoAvaliacao());
+        cromossomosUsados[penultimo.id].cromossomo = primeiro.cromossomo;
+        cromossomosUsados[ultimo.id].cromossomo = segundo.cromossomo;
 
         arquivoGame.cromossomos = cromossomosUsados;
         SaveControl.AtualizarArquivoJogo(arquivoGame);

@@ -7,4 +7,9 @@ using System.Collections.Generic;
 public class Persistente {
     public bool iniciouGame;
     public List<Cromossomo> cromossomos = new List<Cromossomo>();
+    public int highScore;
+    public int highScoreTotal;
+    public int lastScore;
+    public bool evolutionState;
+    public int[] lastScores = new int[4];
 }

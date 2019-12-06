@@ -111,7 +111,6 @@ public class Player : MonoBehaviour
                 Touch t = Input.GetTouch(0);
 
                 if (t.phase == TouchPhase.Began) {
-                    Debug.Log(EventSystem.current.currentSelectedGameObject);
 
                     if (EventSystem.current.currentSelectedGameObject.name == "resetIaButton") {
                         botaoReiniciarIA = true;

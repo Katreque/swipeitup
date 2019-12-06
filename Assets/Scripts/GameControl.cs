@@ -12,7 +12,7 @@ public class GameControl : MonoBehaviour
     public bool gameOver = false;
     public bool botaoClicado = false;
     public bool atualizaVelocidadeMundo = false;
-    private int score = 0;
+    public int score = 0;
     private int scoreTemp = 0;
     private float velocidadeScrollAtual = -1.5f;
 
@@ -53,18 +53,25 @@ public class GameControl : MonoBehaviour
     }
 
     public void Morreu() {
+
+        //Setar Highscore
+        if (score > SaveControl.RetornarHighScore()) {
+            SaveControl.SetarHighScore(score);
+        }
+
+        SaveControl.SetarLastScore(score);
         gameOverText.SetActive(true);
         gameOver = true;
         SaveControl.SalvarArquivoJogo();
     }
 
-    public void NovoJogo () {
+    public void NovoJogo() {
         botaoClicado = true;
     }
 
     public void AtualizaVelocidadeScroll() {
         atualizaVelocidadeMundo = true;
-        velocidadeScrollAtual += -0.02f;
+        velocidadeScrollAtual += -0.015f;
     }
 
     public float GetVelocidadeScrollAtual() {
